@@ -1,0 +1,47 @@
+#include <stdio.h>
+int main()
+{
+	//0x0007FFF83EC3821
+	long long int address = 0xFFFEABCD11112345;
+	char *pAddress1 = (char*) &address;
+	int *pAddress2 = (int*) &address;
+	short *pAddress3 = (short*) &address;
+/*
+ * 1. Create a char type variable and initialize it to value 100
+ * 2. Print the address of the variable
+ * 3. Create a pointer variable and store the address of the variable
+ * 4. Perform read operation on the pointer variable to fetch 1 byte of data from the pointer
+ * 5. Print the data obtained from the read operation on the pointer
+ * 6. Perform write operation on the pointer to store the value 65
+ * 7. Print the value of the variable defined in step 1s
+ */
+	char data = 100;
+	printf("Value of data is : %d\n", data);
+	printf("Address of the variable data is : %p\n", &data);
+
+	char* pAddress = &data;
+	char value = *pAddress;
+	printf("read value is : %d\n", value);
+
+	*pAddress = 50;
+	printf("Value of data is : %d\n", data);
+
+	printf("Value of address %p is : %d\n",pAddress1,*pAddress1);
+	printf("Value of address %p is : %d\n",pAddress2,*pAddress2);
+	printf("Value of address %p is : %d\n",pAddress3,*pAddress3);
+
+
+
+/* Output:
+Value of data is : 100
+Address of the variable data is : 0x2001ffd7
+read value is : 100
+Value of data is : 50
+Value of address 0x2001ffd8 is : 69
+Value of address 0x2001ffd8 is : 286335813
+Value of address 0x2001ffd8 is : 9029
+*/
+
+
+	return 0;
+}
