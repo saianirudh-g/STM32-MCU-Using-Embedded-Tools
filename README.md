@@ -46,10 +46,11 @@ The repository includes:
 STM32-MCU-Using-Embedded-Tools/
 │
 ├── Code/
-│   ├── main.c
-│   ├── gpio.c
-│   ├── stm32xxxx_hal_msp.c
-│   └── ...
+│   ├── Add Debug
+│   ├── Hello World Debug
+│   ├── Pointers
+│   └── SizeOf Debug
+|   └── SysCalls.c
 │
 ├── Images/
 │   ├── stm32_board.jpg
