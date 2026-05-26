@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void)
+{
+    uint32_t height;
+    printf("Enter the height of pyramid: ");
+    scanf("%u", &height);
+
+    for (uint32_t i = 1; i <= height; i++) {
+        for (uint32_t j = i; j > 0; j--) {
+            printf("%u  ", j);
+        }
+        printf("\n");
+    }
+
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { }
+    printf("Press Enter to exit the application...");
+    getchar();
+
+    return 0;
+}
