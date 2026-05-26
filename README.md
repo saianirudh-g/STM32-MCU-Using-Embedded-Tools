@@ -46,11 +46,21 @@ The repository includes:
 STM32-MCU-Using-Embedded-Tools/
 │
 ├── Code/
-│   ├── Add Debug
 │   ├── Hello World Debug
+│   ├── SizeOf Debug
 │   ├── Pointers
-│   └── SizeOf Debug
-|   └── SysCalls.c
+│   └── SysCalls.c
+|   └── IO Pin Read
+|   └── LED On
+|   └── LED Toggle
+|   └── LED Toggle with bitfields
+|   └── LED Toggle with Macros
+|   └── Button ISR
+|   └── KeyPad Operations
+|   └── Number Pyramid
+|   └── Arrays
+|   └── Constant type
+|   └── for loop even numbers
 │
 ├── Images/
 │   ├── stm32_board.jpg
