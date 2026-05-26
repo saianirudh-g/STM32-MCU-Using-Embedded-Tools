@@ -1,0 +1,70 @@
+#include <stdint.h>
+#include <stdio.h>
+
+void delay(void)
+{
+    for (uint32_t i = 0; i < 300000; i++);
+}
+
+int main(void)
+{
+    // Base addresses
+    uint32_t volatile *const pClkCtrlReg     = (uint32_t*)(0x40023800 + 0x30); // RCC_AHB1ENR
+    uint32_t volatile *const pGPIODModeReg   = (uint32_t*)(0x40020C00 + 0x00); // MODER
+    uint32_t volatile *const pGPIODPullReg   = (uint32_t*)(0x40020C00 + 0x0C); // PUPDR
+    uint32_t volatile *const pInputDataReg   = (uint32_t*)(0x40020C00 + 0x10); // IDR
+    uint32_t volatile *const pOutputDataReg  = (uint32_t*)(0x40020C00 + 0x14); // ODR
+
+    // Enable clock for GPIOD
+    *pClkCtrlReg |= (1 << 3);
+
+    // Configure PD0–PD3 as output (rows)
+    *pGPIODModeReg &= ~(0xFF);      // clear bits for pins 0–3
+    *pGPIODModeReg |=  (0x55);      // set pins 0–3 as output (01 per pin)
+
+    // Configure PD8–PD11 as input (columns)
+    *pGPIODModeReg &= ~(0xFF << 16); // clear bits for pins 8–11 (input = 00)
+
+    // Enable pull‑up resistors on column pins
+    *pGPIODPullReg &= ~(0xFF << 16);
+    *pGPIODPullReg |=  (0x55 << 16); // 01 = pull‑up
+
+    while (1)
+    {
+        // --- Row 1 ---
+        *pOutputDataReg |= 0x0F;       // all rows high
+        *pOutputDataReg &= ~(1 << 0);  // drive R1 low
+
+        if (*pInputDataReg & (1 << 8)) { delay(); printf("1\n"); }
+        if (*pInputDataReg & (1 << 9)) { delay(); printf("2\n"); }
+        if (*pInputDataReg & (1 << 10)){ delay(); printf("3\n"); }
+        if (*pInputDataReg & (1 << 11)){ delay(); printf("A\n"); }
+
+        // --- Row 2 ---
+        *pOutputDataReg |= 0x0F;
+        *pOutputDataReg &= ~(1 << 1);
+
+        if (*pInputDataReg & (1 << 8)) { delay(); printf("4\n"); }
+        if (*pInputDataReg & (1 << 9)) { delay(); printf("5\n"); }
+        if (*pInputDataReg & (1 << 10)){ delay(); printf("6\n"); }
+        if (*pInputDataReg & (1 << 11)){ delay(); printf("B\n"); }
+
+        // --- Row 3 ---
+        *pOutputDataReg |= 0x0F;
+        *pOutputDataReg &= ~(1 << 2);
+
+        if (*pInputDataReg & (1 << 8)) { delay(); printf("7\n"); }
+        if (*pInputDataReg & (1 << 9)) { delay(); printf("8\n"); }
+        if (*pInputDataReg & (1 << 10)){ delay(); printf("9\n"); }
+        if (*pInputDataReg & (1 << 11)){ delay(); printf("C\n"); }
+
+        // --- Row 4 ---
+        *pOutputDataReg |= 0x0F;
+        *pOutputDataReg &= ~(1 << 3);
+
+        if (*pInputDataReg & (1 << 8)) { delay(); printf("*\n"); }
+        if (*pInputDataReg & (1 << 9)) { delay(); printf("0\n"); }
+        if (*pInputDataReg & (1 << 10)){ delay(); printf("#\n"); }
+        if (*pInputDataReg & (1 << 11)){ delay(); printf("D\n"); }
+    }
+}
