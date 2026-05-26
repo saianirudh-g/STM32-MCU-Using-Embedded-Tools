@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void)
+{
+	uint8_t data[10] = {0xff,0xff,0xff,0xff,0xff,0xff,0xff};
+
+	printf("contents of this array\n");
+	for(uint32_t i=0; i<10; i++){
+		printf("%x\t",data[i]);
+	}
+
+	data[2] = 0x33;
+	printf("\n");
+	for(uint32_t i=0; i<10; i++){
+			printf("%x\t",data[i]);
+	}
+
+	//printf("Before: 2nd data item = %x\n", data[1]);
+	//data[1] = 0x09;
+	//printf("After: 2nd data item = %x\n", data[1]);
+
+	return 0;
+}
