@@ -1,0 +1,40 @@
+#include <stdint.h>
+
+int main(void)
+{
+    uint32_t volatile *pClkCtrlReg = (uint32_t*)0x40023830;
+    uint32_t volatile *pPortDModeReg = (uint32_t*)0x40020C00;
+    uint32_t volatile *pPortDOutReg = (uint32_t*)0x40020C14;
+
+    uint32_t volatile *pPortAModeReg = (uint32_t*)0x40020000;
+
+    uint32_t volatile *pPortAInReg = (uint32_t*)0x40020010;
+
+    //1. Enable the clock for GPIOD Peripheral in the AHB1ENR
+    *pClkCtrlReg |= ( 1 << 3);
+    *pClkCtrlReg |= ( 1 << 0);
+
+    //configuring PD12 as output
+    *pPortDModeReg &= ~(3 << 24);
+    // Make 24th bit position as 1 (SET)
+    *pPortDModeReg |= (1 << 24);
+
+    //Configure PA0 as input mode (GPIOA Mode register)
+    *pPortAModeReg &= ~(3 << 0);
+
+    while(1){
+    //read the pin status of the pin PA0 (GPIOA Input data register)
+    uint8_t pinStatus = (uint8_t)(*pPortAInReg & 0x1);
+
+    if(pinStatus){
+    	//turn ON LED
+    	*pPortDOutReg |= (1 << 12);
+    }else{
+    	//turn OFF LED
+    	*pPortDOutReg &= ~(1 << 12);
+    }
+
+    //3. SET 12th bit of the output data register to I/O pin-12 as High
+    *pPortDOutReg |= (1 << 12);
+    }
+}
