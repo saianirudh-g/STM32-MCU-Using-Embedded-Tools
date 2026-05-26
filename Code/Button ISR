@@ -1,0 +1,62 @@
+#include <stdint.h>
+#include <stdio.h>
+
+uint8_t g_button_pressed = 0;
+uint32_t g_button_press_count = 0;
+
+uint32_t *pEXTIPendReg      = (uint32_t *)(0x40013C00 + 0x14);
+uint32_t *pClkCtrlReg       = (uint32_t *)(0x40023800 + 0x30);
+uint32_t *pClkCtrlRegApb2   = (uint32_t *)(0x40023800 + 0x44);
+uint32_t *pGPIOAModeReg     = (uint32_t *)(0x40020000 + 0x00);
+uint32_t *pEXTIMaskReg      = (uint32_t *)(0x40013C00 + 0x00);
+uint32_t *pEXTTIEdgeCtrlReg = (uint32_t *)(0x40013C00 + 0x08);
+uint32_t *pNVICIRQEnReg     = (uint32_t *)0xE000E100;
+
+void button_init(void);
+void EXTI0_IRQHandler(void);
+
+int main(void)
+{
+    button_init();
+
+    while (1)
+    {
+        // Disable interrupt
+        *pEXTIMaskReg &= ~(1 << 0);
+
+        if (g_button_pressed)
+        {
+            // Debounce delay
+            for (uint32_t i = 0; i < 500000 / 2; i++);
+            g_button_press_count++;
+            printf("Button is pressed: %lu\n", g_button_press_count);
+            g_button_pressed = 0;
+        }
+            // Enable interrupt
+            *pEXTIMaskReg |= (1 << 0);
+    }
+}
+
+void button_init(void)
+{
+    // Enable GPIOA clock
+    *pClkCtrlReg |= (1 << 0);
+
+    // Enable SYSCFG clock
+    *pClkCtrlRegApb2 |= (1 << 14);
+
+    // Rising edge trigger for EXTI0
+    *pEXTTIEdgeCtrlReg |= (1 << 0);
+
+    // Unmask EXTI0 interrupt
+    *pEXTIMaskReg |= (1 << 0);
+
+    // Enable EXTI0 interrupt in NVIC (IRQ6)
+    *pNVICIRQEnReg |= (1 << 6);
+}
+
+void EXTI0_IRQHandler(void)
+{
+    g_button_pressed = 1;
+    *pEXTIPendReg |= (1 << 0);
+}
